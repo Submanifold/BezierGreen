@@ -1,2 +1,2 @@
 # BezierGreen
-Coming soon
+Hi, thank you for your interest in our work. The code and data are currently being organized. Due to an ongoing revision of another paper this month, the release may not be immediate. Nevertheless, we will ensure that both the data and code are available by July. Our implementation builds upon an excellent survey work: [CageModeler](https://github.com/DanStroeter/CageModeler.git).  We sincerely thank the authors for their contributions——our work truly stands on the shoulders of giants.
