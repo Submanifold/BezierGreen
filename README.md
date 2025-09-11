@@ -20,7 +20,7 @@ Where is the source code: Choose the root directory of this project (where `CMak
 
 Where to build the binaries: Create a `build` folder in the root directory and select this folder.
 
-Then, click `Configure`, select `Visual Studio`. Click `Specify toolchain file for cross-compiling`, and specify the location of your vcpkg (you can download vcpkg to the project root directory). The required packages are in `vcpkg.json`, and using CMake-gui to select the toolchain should automatically download the required packages.
+Then, click `Configure`, select `Visual Studio`. Click `Specify toolchain file for cross-compiling`, and specify the location of your vcpkg (you can download vcpkg to the project root directory). The required packages are in `vcpkg.json`, and using CMake-gui to select the toolchain should automatically download the required packages. If you encounter errors related to Vulkan during the configuration process, you can download [Vulkan](https://vulkan.lunarg.com/sdk/home) from the following link and configure the system environment variables accordingly.
 
 After that, the Visual Studio project `cageDeformation3D.sln` will be generated in the `build` directory. Select the `RelWithDebInfo` mode, build the solution, and the `cageDeformation3D.exe` will be generated. If any DLL files are missing, simply place the corresponding files in the same directory as `cageDeformation3D.exe`.
 
@@ -41,4 +41,16 @@ Additionally, if you want to use the cross-product Neumann term method mentioned
 To preliminarily visualize the Bézier cage and the mesh's positional relationship, we provide a simple Blender Python file in the `./vis` folder, which includes some code in the script.
 
 ## Citation
-To be updated.
+```
+@inproceedings{10.1145/3721238.3730630,
+author = {Dong Xiao and Renjie Chen},
+title = {Flexible 3D Cage-based Deformation via Green Coordinates on B\'{e}zier Patches},
+year = {2025},
+isbn = {9798400715402},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3721238.3730630},
+doi = {10.1145/3721238.3730630},
+series = {SIGGRAPH Conference Papers '25}
+}
+```
