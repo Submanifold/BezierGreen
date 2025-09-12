@@ -20,9 +20,9 @@ Where is the source code: Choose the root directory of this project (where `CMak
 
 Where to build the binaries: Create a `build` folder in the root directory and select this folder.
 
-Then, click `Configure`, select `Visual Studio`. Click `Specify toolchain file for cross-compiling`, and specify the location of your vcpkg (you can download vcpkg to the project root directory). The required packages are in `vcpkg.json`, and using CMake-gui to select the toolchain should automatically download the required packages. If you encounter errors related to Vulkan during the configuration process, you can download [Vulkan](https://vulkan.lunarg.com/sdk/home) from the following link and configure the system environment variables accordingly.
+Then, click `Configure`, select `Visual Studio`. Click `Specify toolchain file for cross-compiling`, and specify the location of your vcpkg (path/to/vcpkg/scripts/buildsystems/vcpkg.cmake). You can download vcpkg to the project root directory. The required packages are in `vcpkg.json`, and using CMake-gui to select the toolchain should automatically download the required packages. If you encounter errors related to Vulkan during the configuration process, you can download [Vulkan](https://vulkan.lunarg.com/sdk/home) from the following link and configure the system environment variables accordingly.
 
-After that, the Visual Studio project `cageDeformation3D.sln` will be generated in the `build` directory. Select the `RelWithDebInfo` mode, build the solution, and the `cageDeformation3D.exe` will be generated. If any DLL files are missing, simply place the corresponding files in the same directory as `cageDeformation3D.exe`.
+After that, the Visual Studio project `cageDeformation3D.sln` will be generated in the `build` directory. Select the `RelWithDebInfo` mode, build the solution, and the `cageDeformation3D.exe` will be generated. If any DLL files are missing, simply place the corresponding files in the same directory as `cageDeformation3D.exe`. It doesn’t matter if there are individual errors related to the CMake version, as long as the cageDeformation3D.exe is successfully generated.
 
 The abbreviation of our method is BGC.
 
