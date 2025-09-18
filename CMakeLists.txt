@@ -84,5 +84,3 @@ add_subdirectory(cagedeformations)
 # Add the command-line application.
 add_subdirectory(app)
 
-# Add the viewer directory to set that up.
-add_subdirectory(viewer)
