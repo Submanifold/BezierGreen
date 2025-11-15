@@ -60,4 +60,5 @@ address = {New York, NY, USA},
 url = {https://doi.org/10.1145/3721238.3730630},
 doi = {10.1145/3721238.3730630},
 series = {SIGGRAPH Conference Papers '25}
+}
 ```
