@@ -43,7 +43,7 @@ The `data` folder contains some data, and the cage is currently stored in txt fi
 
 ![Control Points](./control_points.png)
 
-Additionally, if you want to use the cross-product Neumann term method mentioned in Appendix D, you can change `cross_product_BGC` to `true` in the main function (around line 127). We are optimizing the code, and trying to support inputs of different dimensions for better scalability, although using dynamic length for some variables is slightly slower than using fixed-length arrays for 3rd-order cases.
+Additionally, if you want to use the cross-product Neumann term method mentioned in Appendix D, you can change `cross_product_BGC` to `true` in the main function (around line 289). We are optimizing the code, and trying to support inputs of different dimensions for better scalability, although using dynamic length for some variables is slightly slower than using fixed-length arrays for 3rd-order cases.
 
 ## Visualization
 You can directly use [Meshlab](https://www.meshlab.net/) to visualize the generated obj file. To visualize the Bézier cage and the mesh together, we provide a [Blender](https://www.blender.org/) script named `vis.blend` in the `./vis` folder, which includes some code in the script. First, make sure that the `obj_filepath` and `bezier_filepath` on about line 270 are correct. Then click `Run script`, switch to the `Viewpoint Shading` mode, and you can view the result. You can adjust the style such as colors according to your preferences.
