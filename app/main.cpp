@@ -283,8 +283,14 @@ int main(int argc, char** argv)
 	Eigen::MatrixXd C_deformed;
 	Eigen::VectorXi P;
 	Eigen::MatrixXi BE, CE;
-	std::vector<int> numVerticesPerLine;
+
+	// BGC related variables
 	int bezierDim = 3;
+	bool crossProductBGC = false; // false: use vertex normals; true: use cross products
+	std::vector<int> numVerticesPerLine;
+	std::vector<Eigen::MatrixXd> patchBezierNormals, patchBezierNormalsDeformed;
+	std::vector<Eigen::MatrixXd> patchPointCross, patchPointCrossDeformed;
+	std::vector<Eigen::MatrixXd> psi_bezier;
 	// Load cage if it has not been loaded already
 	if (!BGC)
 	{
@@ -340,15 +346,13 @@ int main(int argc, char** argv)
 		params = fromDeformedCage(C, C_deformed);
 	}
 	
-	std::vector<Eigen::MatrixXd> patchBezierNormals, patchBezierNormalsDeformed;
-	std::vector<Eigen::MatrixXd> patchPointCross, patchPointCrossDeformed;
+	
 	auto const suffix_pos = outMeshFile.find(".");
 	const bool write_msh = outMeshFile.substr(suffix_pos + 1, outMeshFile.size()).compare("msh") == 0;
 
 	Eigen::MatrixXd normals;
 	std::vector<double> psi_tri;
 	std::vector<Eigen::Vector4d> psi_quad;
-	std::vector<Eigen::MatrixXd> psi_bezier;
 	Eigen::VectorXi b;
 	Eigen::MatrixXd bc;
 	if (!MVC && !green && !QMVC && !QGC && !BGC && !MLC && !MEC && !somigliana)
