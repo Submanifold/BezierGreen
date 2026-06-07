@@ -262,8 +262,8 @@ struct Vector3dHash
 bool load_bezier_surface_cage(const std::string& file_name, int dim, Eigen::MatrixXd& V, Eigen::MatrixXi& CF, std::vector<int>& num_vertices_per_line) 
 {
 	num_vertices_per_line.clear();
-	int numControlPointsTriangle = (dim + 2) * (dim + 1) / 2;
-	int nuCcontrolPointsQuad = (dim + 1) * (dim + 1);
+	int numControlPointsBezierTriangle = (dim + 2) * (dim + 1) / 2;
+	int nuCcontrolPointsBezierQuad = (dim + 1) * (dim + 1);
 
 	std::ifstream file(file_name);
 	if (!file.is_open()) {
@@ -296,7 +296,7 @@ bool load_bezier_surface_cage(const std::string& file_name, int dim, Eigen::Matr
 			}
 		}
 		int num_control_points = points.size();
-		if (num_control_points != numControlPointsTriangle && num_control_points != nuCcontrolPointsQuad)
+		if (num_control_points != numControlPointsBezierTriangle && num_control_points != nuCcontrolPointsBezierQuad)
 		{
 			std::cerr << "Invalid number of control points in line: " << line << std::endl;
 			return false;
@@ -315,7 +315,7 @@ bool load_bezier_surface_cage(const std::string& file_name, int dim, Eigen::Matr
 
 	// Resize the output matrices based on the collected data
 	V.resize(all_points.size(), 3);
-	CF.resize(surface_indices.size(), numControlPointsTriangle > nuCcontrolPointsQuad ? numControlPointsTriangle : nuCcontrolPointsQuad);
+	CF.resize(surface_indices.size(), nuCcontrolPointsBezierQuad);
 
 	for (size_t i = 0; i < all_points.size(); ++i)
 	{
@@ -402,8 +402,8 @@ void computeNormalBezier(Eigen::MatrixXd& V, Eigen::MatrixXi& CF, std::vector<Ei
 	}
 
 	int count = 0;
-	int pointNumTriangle = (dim + 1) * (dim + 2) / 2.0;
-	int pointNumQuad = (dim + 1) * (dim + 1);
+	int pointNumBezierTriangle = (dim + 1) * (dim + 2) / 2.0;
+	int pointNumBezierQuad = (dim + 1) * (dim + 1);
 
 	for (const auto& indices : patch_indices)
 	{
@@ -415,15 +415,15 @@ void computeNormalBezier(Eigen::MatrixXd& V, Eigen::MatrixXi& CF, std::vector<Ei
 			allPointsThisPatch.row(i) = V.row(vertexIndex);  
 		}
 		
-		if (num_vertices_per_line[count] == pointNumTriangle)
+		if (num_vertices_per_line[count] == pointNumBezierTriangle)
 		{
-			Eigen::MatrixXd normalsPatch = Eigen::MatrixXd::Zero(pointNumTriangle, 3);
+			Eigen::MatrixXd normalsPatch = Eigen::MatrixXd::Zero(pointNumBezierTriangle, 3);
 			Eigen::Vector3d v1, v2;
 			for (int i = dim; i >= 0; i--)
 			{
 				for (int j = dim - i; j >= 0; j--)
 				{
-					Eigen::Vector3d sumNormal = Eigen::MatrixXd::Zero(pointNumTriangle, 3);
+					Eigen::Vector3d sumNormal = Eigen::Vector3d::Zero();
 					double sumCount = 0.0;
 					int k = dim - i - j;
 					Eigen::Vector3d bijk = allPointsThisPatch.row(returnTriangleIndex(i, j, dim)).transpose();
@@ -477,7 +477,7 @@ void computeNormalBezier(Eigen::MatrixXd& V, Eigen::MatrixXi& CF, std::vector<Ei
 		else
 		{
 			//Eigen::MatrixXd normals_patch = Eigen::MatrixXd::Zero(all_points_this_patch.rows(), 3);
-			Eigen::MatrixXd normalsPatch = Eigen::MatrixXd::Zero(pointNumQuad, 3);
+			Eigen::MatrixXd normalsPatch = Eigen::MatrixXd::Zero(pointNumBezierQuad, 3);
 			Eigen::Vector3d v1, v2;
 			for (int j = 0; j <= dim; j++)
 			{
