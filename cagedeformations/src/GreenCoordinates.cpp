@@ -907,12 +907,6 @@ void calculateGreenCoordinatesTriQuad(const Eigen::MatrixXd& C, const Eigen::Mat
 				std::cerr << "QGC supports only triangles and quads! Unsupported face type found!\n";
 			}
 		}
-		/*double res = 0;
-		for (unsigned int j = 0; j < C.rows(); ++j)
-		{
-			res += phi(j, eta_idx);
-		}
-		assert(std::abs(1. - res) < 1e-3);*/
 	}
 }
 
@@ -1655,10 +1649,6 @@ void calcNewPositionsTriQuad(const Eigen::MatrixXd& C, const Eigen::MatrixXd& C_
 	}
 }
 
-struct tesslateTriangle
-{
-	Eigen::Vector3d vertices[3];
-};
 
 //Pre compute coeff
 std::vector<std::vector<double>> precompute_binomials(int max_degree)
@@ -1684,6 +1674,7 @@ static std::vector<std::vector<double>> binom = precompute_binomials(5);
 Eigen::Vector3d bezier_triangle_interpolate_n(std::vector<Eigen::Vector3d>& control_points, double u, double v, int n)
 {
 	double w = 1 - u - v;
+	
 	if (n == 3)
 	{
 		Eigen::Vector3d result = control_points[0] * (u * u * u) +
@@ -1698,6 +1689,7 @@ Eigen::Vector3d bezier_triangle_interpolate_n(std::vector<Eigen::Vector3d>& cont
 			control_points[9] * (w * w * w);
 		return result;
 	}
+	
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
 
@@ -1717,6 +1709,7 @@ Eigen::Vector3d bezier_triangle_interpolate_n(std::vector<Eigen::Vector3d>& cont
 
 Eigen::Vector3d bezier_quad_interpolate_n(std::vector<Eigen::Vector3d>& control_points, double u, double v, int m, int n)
 {
+	
 	if (m == 3 && n == 3)
 	{
 		double l = 1 - u;
@@ -1739,7 +1732,7 @@ Eigen::Vector3d bezier_quad_interpolate_n(std::vector<Eigen::Vector3d>& control_
 			control_points[15] * (u * u * u) * (v * v * v);
 		return result;
 	}
-
+	
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
 
@@ -1761,6 +1754,7 @@ Eigen::Vector3d bezier_triangle_u_tangent_n(std::vector<Eigen::Vector3d>& contro
 	{
 		return Eigen::Vector3d::Zero();
 	}
+	
 	if (n == 3)
 	{
 		return 3 * u * u * control_points[0] + 6 * u * v * control_points[1]
@@ -1768,6 +1762,7 @@ Eigen::Vector3d bezier_triangle_u_tangent_n(std::vector<Eigen::Vector3d>& contro
 			+ (3 * (1 - u - v) * (1 - u - v) - 6 * u * (1 - u - v)) * control_points[5] - 3 * v * v * control_points[7]
 			- 6 * v * (1 - u - v) * control_points[8] - 3 * (1 - u - v) * (1 - u - v) * control_points[9];
 	}
+	
 	double w = 1 - u - v;
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
@@ -1795,7 +1790,7 @@ Eigen::Vector3d bezier_triangle_v_tangent_n(std::vector<Eigen::Vector3d>& contro
 	{
 		return Eigen::Vector3d::Zero();
 	}
-
+	
 	if (n == 3)
 	{
 		return  3 * u * u * control_points[1]
@@ -1803,7 +1798,7 @@ Eigen::Vector3d bezier_triangle_v_tangent_n(std::vector<Eigen::Vector3d>& contro
 			- (6 * u * (1 - u - v)) * control_points[5] + 3 * v * v * control_points[6] + (6 * v * (1 - u - v) - 3 * v * v) * control_points[7]
 			+ (3 * (1 - u - v) * (1 - u - v) - 6 * v * (1 - u - v)) * control_points[8] - 3 * (1 - u - v) * (1 - u - v) * control_points[9];
 	}
-
+	
 	double w = 1 - u - v;
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
@@ -1834,7 +1829,7 @@ Eigen::Vector3d bezier_quad_u_tangent_n(std::vector<Eigen::Vector3d>& control_po
 	{
 		return Eigen::Vector3d::Zero();
 	}
-
+	
 	if (m == 3 && n == 3)
 	{
 		double a1, a2, a3, a4, b1, b2, b3, b4;
@@ -1851,7 +1846,7 @@ Eigen::Vector3d bezier_quad_u_tangent_n(std::vector<Eigen::Vector3d>& control_po
 			a1 * b3 * control_points[8] + a2 * b3 * control_points[9] + a3 * b3 * control_points[10] + a4 * b3 * control_points[11] +
 			a1 * b4 * control_points[12] + a2 * b4 * control_points[13] + a3 * b4 * control_points[14] + a4 * b4 * control_points[15];
 	}
-
+	
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
 
@@ -1877,7 +1872,7 @@ Eigen::Vector3d bezier_quad_v_tangent_n(std::vector<Eigen::Vector3d>& control_po
 	{
 		return Eigen::Vector3d::Zero();
 	}
-
+	
 	if (m == 3 && n == 3)
 	{
 		double a1, a2, a3, a4, b1, b2, b3, b4;
@@ -1894,7 +1889,7 @@ Eigen::Vector3d bezier_quad_v_tangent_n(std::vector<Eigen::Vector3d>& control_po
 			a1 * b3 * control_points[8] + a2 * b3 * control_points[9] + a3 * b3 * control_points[10] + a4 * b3 * control_points[11] +
 			a1 * b4 * control_points[12] + a2 * b4 * control_points[13] + a3 * b4 * control_points[14] + a4 * b4 * control_points[15];
 	}
-
+	
 	Eigen::Vector3d result = Eigen::Vector3d::Zero();
 	int index = 0;
 
@@ -1920,6 +1915,7 @@ Eigen::VectorXd bezier_triangle_sheet_n(double u, double v, int n) {
 	double w = 1 - u - v;
 	int num_terms = (n + 1) * (n + 2) / 2;
 	Eigen::VectorXd result(num_terms);
+	
 	if (n == 3)
 	{
 		result <<
@@ -1935,6 +1931,7 @@ Eigen::VectorXd bezier_triangle_sheet_n(double u, double v, int n) {
 			w* w* w;
 
 	}
+	
 	int index = 0;
 
 	for (int i = n; i >= 0; i--)
@@ -1956,6 +1953,7 @@ Eigen::VectorXd bezier_triangle_sheet_u_n(double u, double v, int n)
 	double w = 1 - u - v;
 	int num_terms = (n + 1) * (n + 2) / 2;
 	Eigen::VectorXd result(num_terms);
+	
 	if (n == 3)
 	{
 		result <<
@@ -1971,6 +1969,7 @@ Eigen::VectorXd bezier_triangle_sheet_u_n(double u, double v, int n)
 			-3 * (1 - u - v) * (1 - u - v);
 		return result;
 	}
+	
 	int index = 0;
 
 	for (int i = n; i >= 0; i--)
@@ -1993,6 +1992,7 @@ Eigen::VectorXd bezier_triangle_sheet_v_n(double u, double v, int n)
 	int num_terms = (n + 1) * (n + 2) / 2;
 	Eigen::VectorXd result(num_terms);
 	int index = 0;
+	
 	if (n == 3)
 	{
 		result <<
@@ -2007,6 +2007,7 @@ Eigen::VectorXd bezier_triangle_sheet_v_n(double u, double v, int n)
 			3 * (1 - u - v) * (1 - u - v) - 6 * v * (1 - u - v),
 			-3 * (1 - u - v) * (1 - u - v);
 	}
+	
 	for (int i = n; i >= 0; i--)
 	{
 		for (int j = n - i; j >= 0; j--)
@@ -2040,6 +2041,7 @@ Eigen::VectorXd mergeVectors_triangle(const Eigen::VectorXd& vec1, const Eigen::
 
 Eigen::VectorXd bezier_quad_sheet_n(double u, double v, int m, int n)
 {
+	
 	if (m == 3 && n == 3)
 	{
 		double l = 1 - u;
@@ -2065,13 +2067,14 @@ Eigen::VectorXd bezier_quad_sheet_n(double u, double v, int m, int n)
 			(u * u * u)* (v * v * v);
 		return result;
 	}
+	
 	int num_terms = (m + 1) * (n + 1);
 	Eigen::VectorXd result(num_terms);
 	int index = 0;
 
 	for (int j = 0; j <= n; ++j) {
 		for (int i = 0; i <= m; ++i) {
-			double coeff_u = binom[m][i] * pow(v, j) * pow(1 - v, n - j);
+			double coeff_u = binom[m][i] * pow(u, i) * pow(1 - u, m - i);
 			double coeff_v = binom[n][j] * pow(v, j) * pow(1 - v, n - j);
 			result(index) = coeff_u * coeff_v;
 			++index;
@@ -2082,6 +2085,7 @@ Eigen::VectorXd bezier_quad_sheet_n(double u, double v, int m, int n)
 Eigen::VectorXd bezier_quad_sheet_u_n(double u, double v, int m, int n) {
 	int num_terms = (m + 1) * (n + 1);
 	Eigen::VectorXd result(num_terms);
+	
 	if (m == 3 && n == 3)
 	{
 		double a1, a2, a3, a4, b1, b2, b3, b4;
@@ -2113,6 +2117,7 @@ Eigen::VectorXd bezier_quad_sheet_u_n(double u, double v, int m, int n) {
 			a4* b4;
 		return result;
 	}
+	
 	int index = 0;
 
 	for (int i = 0; i <= m; ++i) {
@@ -2129,6 +2134,7 @@ Eigen::VectorXd bezier_quad_sheet_u_n(double u, double v, int m, int n) {
 Eigen::VectorXd bezier_quad_sheet_v_n(double u, double v, int m, int n) {
 	int num_terms = (m + 1) * (n + 1);
 	Eigen::VectorXd result(num_terms);
+	
 	if (m == 3 && n == 3)
 	{
 		double a1, a2, a3, a4, b1, b2, b3, b4;
@@ -2161,6 +2167,7 @@ Eigen::VectorXd bezier_quad_sheet_v_n(double u, double v, int m, int n) {
 
 		return result;
 	}
+	
 	int index = 0;
 
 	for (int i = 0; i <= m; ++i) {
@@ -2265,12 +2272,12 @@ Eigen::Vector3d closestPointOnBezierSurface(const Eigen::Vector3d& point, std::v
 	double v = v0;
 
 	Eigen::Vector3d a1 = control_points[0];
-	Eigen::Vector3d b1 = control_points[dim - 1];
-	Eigen::Vector3d c1 = control_points[(dim - 1) * dim];
+	Eigen::Vector3d b1 = control_points[dim];
+	Eigen::Vector3d c1 = control_points[(dim + 1) * dim];
 
-	Eigen::Vector3d a2 = control_points[dim - 1];
-	Eigen::Vector3d b2 = control_points[dim * dim - 1];
-	Eigen::Vector3d c2 = control_points[(dim - 1) * dim];
+	Eigen::Vector3d a2 = control_points[dim];
+	Eigen::Vector3d b2 = control_points[(dim + 1) * (dim + 1) - 1];
+	Eigen::Vector3d c2 = control_points[(dim + 1) * dim];
 	double u1, v1, w1, u2, v2, w2;
 	Eigen::Vector3d closest1 = closestPointOnTriangle(point, a1, b1, c1, u1, v1, w1);
 	Eigen::Vector3d closest2 = closestPointOnTriangle(point, a2, b2, c2, u2, v2, w2);
@@ -2318,9 +2325,6 @@ Eigen::Vector3d closestPointOnBezierSurface(const Eigen::Vector3d& point, std::v
 }
 Eigen::VectorXd computePhiAndPsiForOneBezierTriangle(const Eigen::Vector3d& eta, std::vector<Eigen::Vector3d>& control_points, std::vector<Eigen::Vector3d>& vertex_normals, int dim)
 {
-	const int divisions = 5;
-	const double stepU = 1.0 / divisions;
-	const double stepV = 1.0 / divisions;
 
 	int numPointBezierTriangle = (dim + 1) * (dim + 2) / 2;
 	Eigen::VectorXd Phi(2 * numPointBezierTriangle);
@@ -2340,13 +2344,13 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangle(const Eigen::Vector3d& eta,
 			auto const v_avg = (v_tri[0] + v_tri[1] + v_tri[2]) / 3.;
 			auto const w_avg = 1.0 - u_avg - v_avg;
 
-			Eigen::Vector3d tesselated_tri[3];
+			Eigen::Vector3d tessellated_tri[3];
 			for (int k = 0; k < 3; ++k)
 			{
-				tesselated_tri[k] = bezier_triangle_interpolate_n(control_points, u_tri[k], v_tri[k], dim);
+				tessellated_tri[k] = bezier_triangle_interpolate_n(control_points, u_tri[k], v_tri[k], dim);
 			}
 
-			Eigen::Vector3d Nt = (tesselated_tri[1] - tesselated_tri[0]).cross(tesselated_tri[2] - tesselated_tri[0]);
+			Eigen::Vector3d Nt = (tessellated_tri[1] - tessellated_tri[0]).cross(tessellated_tri[2] - tessellated_tri[0]);
 			double NtNorm = Nt.norm();
 			double At = NtNorm / 2.0;
 			Nt /= NtNorm;
@@ -2354,7 +2358,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangle(const Eigen::Vector3d& eta,
 
 			double psi_tri = 0.0;
 			Eigen::Vector3d e[3];    double e_norm[3];   Eigen::Vector3d e_normalized[3];    double R[3];    Eigen::Vector3d d[3];    double d_norm[3];     double C[3];     Eigen::Vector3d J[3];
-			for (unsigned int v = 0; v < 3u; ++v) e[v] = tesselated_tri[v] - eta;
+			for (unsigned int v = 0; v < 3u; ++v) e[v] = tessellated_tri[v] - eta;
 			for (unsigned int v = 0; v < 3u; ++v) e_norm[v] = e[v].norm();
 			for (unsigned int v = 0; v < 3u; ++v) e_normalized[v] = e[v] / e_norm[v];
 
@@ -2363,7 +2367,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangle(const Eigen::Vector3d& eta,
 			auto const signed_volume = (e[0].cross(e[1])).dot(e[2]) / 6.0;
 
 			for (unsigned int v = 0; v < 3; ++v) R[v] = e_norm[(v + 1) % 3] + e_norm[(v + 2) % 3];
-			for (unsigned int v = 0; v < 3; ++v) d[v] = tesselated_tri[(v + 1) % 3] - tesselated_tri[(v + 2) % 3];
+			for (unsigned int v = 0; v < 3; ++v) d[v] = tessellated_tri[(v + 1) % 3] - tessellated_tri[(v + 2) % 3];
 			for (unsigned int v = 0; v < 3; ++v) d_norm[v] = d[v].norm();
 			for (unsigned int v = 0; v < 3; ++v) C[v] = std::log((R[v] + d_norm[v]) / (R[v] - d_norm[v])) / (4.0 * M_PI * d_norm[v]);
 
@@ -2388,6 +2392,9 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangle(const Eigen::Vector3d& eta,
 
 	//Uniform tessellation was found to be feasible for the Bézier triangle, although we explored some potentially smarter alternatives,
 	// which did not yield better results.
+	const int divisions = 5;
+	const double stepU = 1.0 / divisions;
+	const double stepV = 1.0 / divisions;
 	for (int i = 0; i <= divisions; ++i)
 	{
 		for (int j = 0; j <= divisions - i; ++j)
@@ -2472,12 +2479,12 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurface(const Eigen::Vector3d& eta, 
 			auto const u_avg = (u_tri[0] + u_tri[1] + u_tri[2]) / 3.;
 			auto const v_avg = (v_tri[0] + v_tri[1] + v_tri[2]) / 3.;
 
-			Eigen::Vector3d tesselated_tri[3];
+			Eigen::Vector3d tessellated_tri[3];
 			for (int k = 0; k < 3; ++k)
 			{
-				tesselated_tri[k] = bezier_quad_interpolate_n(control_points, u_tri[k], v_tri[k], dim, dim);
+				tessellated_tri[k] = bezier_quad_interpolate_n(control_points, u_tri[k], v_tri[k], dim, dim);
 			}
-			Eigen::Vector3d Nt = (tesselated_tri[1] - tesselated_tri[0]).cross(tesselated_tri[2] - tesselated_tri[0]);
+			Eigen::Vector3d Nt = (tessellated_tri[1] - tessellated_tri[0]).cross(tessellated_tri[2] - tessellated_tri[0]);
 			double NtNorm = Nt.norm();
 			double At = NtNorm / 2.0;
 			Nt /= NtNorm;
@@ -2489,7 +2496,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurface(const Eigen::Vector3d& eta, 
 			double psi_tri = 0.0;
 
 			Eigen::Vector3d e[3];    double e_norm[3];   Eigen::Vector3d e_normalized[3];    double R[3];    Eigen::Vector3d d[3];    double d_norm[3];     double C[3];     Eigen::Vector3d J[3];
-			for (unsigned int v = 0; v < 3u; ++v) e[v] = tesselated_tri[v] - eta;
+			for (unsigned int v = 0; v < 3u; ++v) e[v] = tessellated_tri[v] - eta;
 			for (unsigned int v = 0; v < 3u; ++v)
 			{
 				e_norm[v] = e[v].norm();
@@ -2501,7 +2508,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurface(const Eigen::Vector3d& eta, 
 			auto const signed_solid_angle = omega_tri / (4.f * M_PI);
 			auto const signed_volume = (e[0].cross(e[1])).dot(e[2]) / 6.0;
 			for (unsigned int v = 0; v < 3; ++v) R[v] = e_norm[(v + 1) % 3] + e_norm[(v + 2) % 3];
-			for (unsigned int v = 0; v < 3; ++v) d[v] = tesselated_tri[(v + 1) % 3] - tesselated_tri[(v + 2) % 3];
+			for (unsigned int v = 0; v < 3; ++v) d[v] = tessellated_tri[(v + 1) % 3] - tessellated_tri[(v + 2) % 3];
 			for (unsigned int v = 0; v < 3; ++v) d_norm[v] = d[v].norm();
 			for (unsigned int v = 0; v < 3; ++v) C[v] = std::log((R[v] + d_norm[v]) / (R[v] - d_norm[v])) / (4.0 * M_PI * d_norm[v]);
 
@@ -2554,10 +2561,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurface(const Eigen::Vector3d& eta, 
 
 Eigen::VectorXd computePhiAndPsiForOneBezierTriangleCrossProduct(const Eigen::Vector3d& eta, std::vector<Eigen::Vector3d>& control_points, int dim)
 {
-	const int divisions = 5;
-	const double stepU = 1.0 / divisions;
-	const double stepV = 1.0 / divisions;
-
+	
 	int numPointBezierTriangle = (dim + 1) * (dim + 2) / 2;
 	int numCrossBezierTriangle = numPointBezierTriangle * (numPointBezierTriangle - 1) / 2;
 	Eigen::VectorXd Phi(numPointBezierTriangle + numCrossBezierTriangle);
@@ -2576,13 +2580,13 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangleCrossProduct(const Eigen::Ve
 			auto const v_avg = (v_tri[0] + v_tri[1] + v_tri[2]) / 3.;
 			auto const w_avg = 1.0 - u_avg - v_avg;
 
-			Eigen::Vector3d tesselated_tri[3];
+			Eigen::Vector3d tessellated_tri[3];
 			for (int k = 0; k < 3; ++k)
 			{
-				tesselated_tri[k] = bezier_triangle_interpolate_n(control_points, u_tri[k], v_tri[k], dim);
+				tessellated_tri[k] = bezier_triangle_interpolate_n(control_points, u_tri[k], v_tri[k], dim);
 			}
 
-			Eigen::Vector3d Nt = (tesselated_tri[1] - tesselated_tri[0]).cross(tesselated_tri[2] - tesselated_tri[0]);
+			Eigen::Vector3d Nt = (tessellated_tri[1] - tessellated_tri[0]).cross(tessellated_tri[2] - tessellated_tri[0]);
 			double NtNorm = Nt.norm();
 			double At = NtNorm / 2.0;
 			Nt /= NtNorm;
@@ -2590,7 +2594,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangleCrossProduct(const Eigen::Ve
 
 			double psi_tri = 0.0;
 			Eigen::Vector3d e[3];    double e_norm[3];   Eigen::Vector3d e_normalized[3];    double R[3];    Eigen::Vector3d d[3];    double d_norm[3];     double C[3];     Eigen::Vector3d J[3];
-			for (unsigned int v = 0; v < 3u; ++v) e[v] = tesselated_tri[v] - eta;
+			for (unsigned int v = 0; v < 3u; ++v) e[v] = tessellated_tri[v] - eta;
 			for (unsigned int v = 0; v < 3u; ++v) e_norm[v] = e[v].norm();
 			for (unsigned int v = 0; v < 3u; ++v) e_normalized[v] = e[v] / e_norm[v];
 
@@ -2599,7 +2603,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangleCrossProduct(const Eigen::Ve
 			auto const signed_volume = (e[0].cross(e[1])).dot(e[2]) / 6.0;
 
 			for (unsigned int v = 0; v < 3; ++v) R[v] = e_norm[(v + 1) % 3] + e_norm[(v + 2) % 3];
-			for (unsigned int v = 0; v < 3; ++v) d[v] = tesselated_tri[(v + 1) % 3] - tesselated_tri[(v + 2) % 3];
+			for (unsigned int v = 0; v < 3; ++v) d[v] = tessellated_tri[(v + 1) % 3] - tessellated_tri[(v + 2) % 3];
 			for (unsigned int v = 0; v < 3; ++v) d_norm[v] = d[v].norm();
 			for (unsigned int v = 0; v < 3; ++v) C[v] = std::log((R[v] + d_norm[v]) / (R[v] - d_norm[v])) / (4.0 * M_PI * d_norm[v]);
 
@@ -2630,7 +2634,9 @@ Eigen::VectorXd computePhiAndPsiForOneBezierTriangleCrossProduct(const Eigen::Ve
 				Phi(k + numPointBezierTriangle) += psi_bezier(k);
 			}
 		};
-
+	const int divisions = 5;
+	const double stepU = 1.0 / divisions;
+	const double stepV = 1.0 / divisions;
 	for (int i = 0; i <= divisions; ++i)
 	{
 		for (int j = 0; j <= divisions - i; ++j)
@@ -2695,7 +2701,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurfaceCrossProduct(const Eigen::Vec
 		}
 	}
 
-	std::vector<tesslateTriangle> triangles_mesh;
+	
 	std::function<void(Eigen::Vector3d, Eigen::Vector3d)> Proc = [&](Eigen::Vector3d u_triangle, Eigen::Vector3d v_triangle)
 		{
 			double u_tri[3], v_tri[3];
@@ -2712,12 +2718,12 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurfaceCrossProduct(const Eigen::Vec
 			auto const u_avg = (u_tri[0] + u_tri[1] + u_tri[2]) / 3.;
 			auto const v_avg = (v_tri[0] + v_tri[1] + v_tri[2]) / 3.;
 
-			Eigen::Vector3d tesselated_tri[3];
+			Eigen::Vector3d tessellated_tri[3];
 			for (int k = 0; k < 3; ++k)
 			{
-				tesselated_tri[k] = bezier_quad_interpolate_n(control_points, u_tri[k], v_tri[k], dim, dim);
+				tessellated_tri[k] = bezier_quad_interpolate_n(control_points, u_tri[k], v_tri[k], dim, dim);
 			}
-			Eigen::Vector3d Nt = (tesselated_tri[1] - tesselated_tri[0]).cross(tesselated_tri[2] - tesselated_tri[0]);
+			Eigen::Vector3d Nt = (tessellated_tri[1] - tessellated_tri[0]).cross(tessellated_tri[2] - tessellated_tri[0]);
 			double NtNorm = Nt.norm();
 			double At = NtNorm / 2.0;
 			Nt /= NtNorm;
@@ -2729,7 +2735,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurfaceCrossProduct(const Eigen::Vec
 			double psi_tri = 0.0;
 
 			Eigen::Vector3d e[3];    double e_norm[3];   Eigen::Vector3d e_normalized[3];    double R[3];    Eigen::Vector3d d[3];    double d_norm[3];     double C[3];     Eigen::Vector3d J[3];
-			for (unsigned int v = 0; v < 3u; ++v) e[v] = tesselated_tri[v] - eta;
+			for (unsigned int v = 0; v < 3u; ++v) e[v] = tessellated_tri[v] - eta;
 			for (unsigned int v = 0; v < 3u; ++v)
 			{
 				e_norm[v] = e[v].norm();
@@ -2743,7 +2749,7 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurfaceCrossProduct(const Eigen::Vec
 
 
 			for (unsigned int v = 0; v < 3; ++v) R[v] = e_norm[(v + 1) % 3] + e_norm[(v + 2) % 3];
-			for (unsigned int v = 0; v < 3; ++v) d[v] = tesselated_tri[(v + 1) % 3] - tesselated_tri[(v + 2) % 3];
+			for (unsigned int v = 0; v < 3; ++v) d[v] = tessellated_tri[(v + 1) % 3] - tessellated_tri[(v + 2) % 3];
 			for (unsigned int v = 0; v < 3; ++v) d_norm[v] = d[v].norm();
 			for (unsigned int v = 0; v < 3; ++v) C[v] = std::log((R[v] + d_norm[v]) / (R[v] - d_norm[v])) / (4.0 * M_PI * d_norm[v]);
 
@@ -2796,7 +2802,6 @@ Eigen::VectorXd computePhiAndPsiForOneBezierSurfaceCrossProduct(const Eigen::Vec
 			}
 		}
 	}
-
 	return Phi;
 }
 
@@ -2808,7 +2813,6 @@ void calculateGreenCoordinatesBezier(const Eigen::MatrixXd& C, const Eigen::Matr
 	phi_bezier.fill(0);
 	int numPointBezierTriangle = (dim + 1) * (dim + 2) / 2;
 	int numPointBezierQuad = (dim + 1) * (dim + 1);
-	//eta is the vertex of triangle.
 	for (int eta_idx = 0; eta_idx < eta_m.rows(); ++eta_idx)
 	{
 		const Eigen::Vector3d eta = eta_m.row(eta_idx);
@@ -2818,7 +2822,6 @@ void calculateGreenCoordinatesBezier(const Eigen::MatrixXd& C, const Eigen::Matr
 
 		int y_index = 0;
 		int A_index = 0;
-
 
 		bool have_bezier_triangle = false;
 		for (int face_idx = 0; face_idx < CF.rows(); ++face_idx)
