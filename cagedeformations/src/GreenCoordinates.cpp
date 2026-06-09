@@ -1929,7 +1929,7 @@ Eigen::VectorXd bezier_triangle_sheet_n(double u, double v, int n) {
 			3 * v * v * w,
 			3 * v * w * w,
 			w* w* w;
-
+		return result;
 	}
 	
 	int index = 0;
@@ -2006,6 +2006,7 @@ Eigen::VectorXd bezier_triangle_sheet_v_n(double u, double v, int n)
 			6 * v * (1 - u - v) - 3 * v * v,
 			3 * (1 - u - v) * (1 - u - v) - 6 * v * (1 - u - v),
 			-3 * (1 - u - v) * (1 - u - v);
+		return result;
 	}
 	
 	for (int i = n; i >= 0; i--)
